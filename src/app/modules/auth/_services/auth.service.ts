@@ -3,7 +3,6 @@ import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { map, catchError, switchMap, finalize } from 'rxjs/operators';
 import { UserModel } from '../_models/user.model';
 import { AuthModel } from '../_models/auth.model';
-import { AuthHTTPService } from './auth-http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 
@@ -23,7 +22,23 @@ export class AuthService implements OnDestroy {
 
 
   get currentUserValue(): UserModel {
-    return this.currentUserSubject.value;
+    // return this.currentUserSubject.value;
+    let tempUser = new UserModel();
+    tempUser.setUser({
+      id: '123',
+      username: 'Sean',
+      password: 'demo',
+      fullname: 'Sean Barrius',
+      email: 'admin@demo.com',
+      pic: './assets/media/users/default.jpg',
+      roles: [],
+      occupation: '',
+      companyName: '',
+      phone: '+973 38895499',
+      address: 'House 1561, Road 4732, Block 447',
+      socialNetworks: '',
+    });
+    return tempUser;
   }
 
   set currentUserValue(user: UserModel) {
@@ -31,7 +46,7 @@ export class AuthService implements OnDestroy {
   }
 
   constructor(
-    private authHttpService: AuthHTTPService,
+    // private authHttpService: AuthHTTPService,
     private router: Router
   ) {
     this.isLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -44,19 +59,7 @@ export class AuthService implements OnDestroy {
 
   // public methods
   login(email: string, password: string): Observable<UserModel> {
-    this.isLoadingSubject.next(true);
-    return this.authHttpService.login(email, password).pipe(
-      map((auth: AuthModel) => {
-        const result = this.setAuthFromLocalStorage(auth);
-        return result;
-      }),
-      switchMap(() => this.getUserByToken()),
-      catchError((err) => {
-        console.error('err', err);
-        return of(undefined);
-      }),
-      finalize(() => this.isLoadingSubject.next(false))
-    );
+    return of(undefined);
   }
 
   logout() {
@@ -72,41 +75,18 @@ export class AuthService implements OnDestroy {
       return of(undefined);
     }
 
-    this.isLoadingSubject.next(true);
-    return this.authHttpService.getUserByToken(auth.accessToken).pipe(
-      map((user: UserModel) => {
-        if (user) {
-          this.currentUserSubject = new BehaviorSubject<UserModel>(user);
-        } else {
-          this.logout();
-        }
-        return user;
-      }),
-      finalize(() => this.isLoadingSubject.next(false))
-    );
+    return of(undefined);
   }
 
   // need create new user then login
   registration(user: UserModel): Observable<any> {
     this.isLoadingSubject.next(true);
-    return this.authHttpService.createUser(user).pipe(
-      map(() => {
-        this.isLoadingSubject.next(false);
-      }),
-      switchMap(() => this.login(user.email, user.password)),
-      catchError((err) => {
-        console.error('err', err);
-        return of(undefined);
-      }),
-      finalize(() => this.isLoadingSubject.next(false))
-    );
+    return of(undefined);
   }
 
   forgotPassword(email: string): Observable<boolean> {
     this.isLoadingSubject.next(true);
-    return this.authHttpService
-      .forgotPassword(email)
-      .pipe(finalize(() => this.isLoadingSubject.next(false)));
+    return of(undefined);
   }
 
   // private methods

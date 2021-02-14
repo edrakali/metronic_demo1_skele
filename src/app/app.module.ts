@@ -16,7 +16,6 @@ import { environment } from 'src/environments/environment';
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SplashScreenModule } from './_metronic/partials/layout/splash-screen/splash-screen.module';
 // #fake-start#
-import { FakeAPIService } from './_fake/fake-api.service';
 // #fake-end#
 
 function appInitializer(authService: AuthService) {
@@ -25,11 +24,6 @@ function appInitializer(authService: AuthService) {
       authService.getUserByToken().subscribe().add(resolve);
     });
   };
-}
-
-
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
 @NgModule({
@@ -42,14 +36,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpClientModule,
     HighlightModule,
     ClipboardModule,
-    // #fake-start#
-    environment.isMockEnabled
-      ? HttpClientInMemoryWebApiModule.forRoot(FakeAPIService, {
-        passThruUnknownUrl: true,
-        dataEncapsulation: false,
-      })
-      : [],
-    // #fake-end#
     AppRoutingModule,
     InlineSVGModule.forRoot(),
     NgbModule,
